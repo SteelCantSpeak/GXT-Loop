@@ -9,25 +9,24 @@ public class PlayerSpectator : MonoBehaviour
 	private StarterAssetsInputs _input;
 	public CinemachineVirtualCamera _cam;
 	Transform centerBoard;
+	Transform centerRotate;
 
 	//Camera Angles
 	public Vector2 rotation = Vector2.zero;
 	public float lookSpeed = 20f;
 	public float moveSpeed = 20f;
 
-	//POV position
-	float MaxDist = 3;
 	public Vector3 pos = Vector3.zero;
 	Vector3 originalPos;
 
 	// Start is called before the first frame update
 	void Start()
     {
-		_input = GetComponent<StarterAssetsInputs>();
+		_input = GetComponentInParent<StarterAssetsInputs>();
 		centerBoard = GameObject.FindGameObjectWithTag("Origin").transform;
+		centerRotate = centerBoard.GetChild(0);
 
-		_cam = transform.parent.GetComponentInChildren<CinemachineVirtualCamera>();
-		_cam.Follow = centerBoard;
+		_cam.Follow = centerRotate;
 		_cam.LookAt = centerBoard;
 
 		originalPos = centerBoard.position;
@@ -43,7 +42,8 @@ public class PlayerSpectator : MonoBehaviour
 			rotation.y -= _input.look.y * delta;
 
 			rotation.y = Mathf.Clamp(rotation.y, 0, 89);
-			centerBoard.localRotation = Quaternion.Euler(rotation.y, rotation.x, 0f);
+			centerRotate.localRotation = Quaternion.Euler(rotation.y, 0f, 0f);
+			centerBoard.localRotation = Quaternion.Euler(0f, rotation.x, 0f);
 		}
 
 		if (_input.move != Vector2.zero)
@@ -51,9 +51,8 @@ public class PlayerSpectator : MonoBehaviour
 			pos.x = _input.move.x;
 			pos.z = _input.move.y;
 
-			Vector3 dir = Vector3.forward * Mathf.Sqrt(pos.sqrMagnitude);
-			dir.y = 0f;
-			centerBoard.Translate(dir * Time.fixedDeltaTime * moveSpeed);
+			Vector3 dir = (centerBoard.forward * pos.z) + (centerBoard.right * pos.x);
+			centerBoard.position += dir * moveSpeed *Time.fixedDeltaTime;
 		}
 	}
 }

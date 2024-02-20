@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class FallBlock : MonoBehaviour
+public class FallBlock : NetworkBehaviour
 {
 	public int destroyTime = 1;
 	float fallspeed = 5f;
@@ -14,14 +15,14 @@ public class FallBlock : MonoBehaviour
 		Shot,
 		Standard
 	}
-	public Blockstate state = Blockstate.Standard;
+	public NetworkVariable<Blockstate> state = new NetworkVariable<Blockstate>(Blockstate.Standard, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 	private void OnTriggerExit(Collider other)
 	{
 		if (other.gameObject.tag == "Player")
 		{
-			state = Blockstate.SteppedOn;
-			Destroy(this.gameObject, destroyTime);
+			state.Value = Blockstate.SteppedOn;
+
 		}
 	}
 
@@ -32,20 +33,24 @@ public class FallBlock : MonoBehaviour
 			stayTime -= 1 * Time.deltaTime;
 			if (stayTime <= 0f)
 			{
-				state = Blockstate.SteppedOn;
+				state.Value = Blockstate.SteppedOn;
 			}
 		}
 	}
 
 	private void FixedUpdate()
 	{
-		if (state == Blockstate.SteppedOn)
+		if (state.Value == Blockstate.SteppedOn)
 		{
 
 			transform.position -= new Vector3(0, fallspeed, 0) * Time.fixedDeltaTime;
 			fallspeed += fallspeed * Time.fixedDeltaTime;
+			if (fallspeed >= 10f)
+			{
+				this.gameObject.GetComponent<NetworkObject>().Despawn(true);
+			}
 		}
-		else if (state == Blockstate.Shot)
+		else if (state.Value == Blockstate.Shot)
 		{
 			Destroy(this.gameObject);
 		}
@@ -53,6 +58,6 @@ public class FallBlock : MonoBehaviour
 
 	public void GetShot()
 	{
-		state = Blockstate.Shot;
+		state.Value = Blockstate.Shot;
 	}
 }

@@ -782,8 +782,6 @@ GameObject:
   - component: {fileID: 772718118826481500}
   - component: {fileID: 7353709455036415717}
   - component: {fileID: 7737841181828136009}
-  - component: {fileID: 5852431289088755883}
-  - component: {fileID: 230735059072744203}
   m_Layer: 2
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1036,35 +1034,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &5852431289088755883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3859856994788818139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2302165e416f036418978a16cd425b1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cam: {fileID: 9174457135013533393}
-  AimFOV: 20
-  BaseFOV: 40
-  Particles: {fileID: 5841814913687682941, guid: 3a5b32972fb18e6448bf17913861ed0e, type: 3}
---- !u!114 &230735059072744203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3859856994788818139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01f572be653ec7e4e95baaead87eede8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _color: {r: 1, g: 1, b: 1, a: 0.33333334}
 --- !u!1 &3968590450292524346
 GameObject:
   m_ObjectHideFlags: 0
@@ -1487,6 +1456,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8982584501983550589}
+  - component: {fileID: 2816836296129374308}
+  - component: {fileID: 3034450978703076613}
   m_Layer: 0
   m_Name: PlayerAsset
   m_TagString: Untagged
@@ -1511,6 +1482,37 @@ Transform:
   - {fileID: 3084814834956223457}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2816836296129374308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6259171173141356486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f572be653ec7e4e95baaead87eede8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _color: {r: 1, g: 1, b: 1, a: 0.33333334}
+--- !u!114 &3034450978703076613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6259171173141356486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2302165e416f036418978a16cd425b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spectator: {fileID: 4371611463026256059, guid: b467e5ae077c45240ae9faefe7aa05b0, type: 3}
+  model: {fileID: 3859856994788818139}
+  _cam: {fileID: 9174457135013533393}
+  AimFOV: 20
+  BaseFOV: 40
+  Particles: {fileID: 5841814913687682941, guid: 3a5b32972fb18e6448bf17913861ed0e, type: 3}
 --- !u!1 &6474535935997841090
 GameObject:
   m_ObjectHideFlags: 0

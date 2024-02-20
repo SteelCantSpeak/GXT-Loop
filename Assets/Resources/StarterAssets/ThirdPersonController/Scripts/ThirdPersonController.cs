@@ -1,4 +1,5 @@
 ﻿ using UnityEngine;
+using Unity.Netcode;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -9,10 +10,7 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM 
-    [RequireComponent(typeof(PlayerInput))]
-#endif
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : NetworkBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -138,9 +136,9 @@ namespace StarterAssets
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            _input = GetComponentInParent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
-            _playerInput = GetComponent<PlayerInput>();
+            _playerInput = GetComponentInParent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -154,6 +152,10 @@ namespace StarterAssets
 
         private void Update()
         {
+			if (!IsOwner)
+			{
+				return;
+			}
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -163,7 +165,11 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            CameraRotation();
+			if (!IsOwner)
+			{
+				return;
+			}
+			CameraRotation();
         }
 
         private void AssignAnimationIDs()

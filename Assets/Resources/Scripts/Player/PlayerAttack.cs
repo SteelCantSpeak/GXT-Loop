@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
 using Cinemachine;
+using Unity.Netcode;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : NetworkBehaviour
 {
+	public GameObject spectator;
+	public GameObject player;
 
+	public GameObject model;
+	[Space]
 	private StarterAssetsInputs _input;
 	public CinemachineVirtualCamera _cam;
 
+	int mapSize = 4;
 	public float AimFOV = 20;
 	public float BaseFOV = 40;
 	public GameObject Particles;
@@ -17,8 +23,17 @@ public class PlayerAttack : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		_input = GetComponent<StarterAssetsInputs>();
-		_cam = transform.parent.GetComponentInChildren<CinemachineVirtualCamera>();
+		player.transform.position = new Vector3(Random.Range(-mapSize, mapSize), 1f, Random.Range(-mapSize, mapSize));
+		_input = GetComponentInParent<StarterAssetsInputs>();
+		_cam = player.GetComponentInChildren<CinemachineVirtualCamera>();
+		spectator.SetActive(false);
+
+		if (!IsOwner)
+		{
+			Destroy(_input);
+			Destroy(_cam);
+			this.enabled = false;
+		}
 	}
 
     // Update is called once per frame
@@ -49,11 +64,18 @@ public class PlayerAttack : MonoBehaviour
 			Fire();
 		}
 
-		//track if Player falls
-		if (transform.position.y <= -10f)
+		if (model != null)
 		{
-			Debug.Log("lost");
+			//track if Player falls
+			if (model.transform.position.y <= -10f)
+			{
+				Debug.Log("lost");
+				player.GetComponent<NetworkObject>().Despawn(true);
+				spectator.SetActive(true);
+				_cam = spectator.GetComponentInChildren<CinemachineVirtualCamera>();
+			}
 		}
+		
 	}
 
 	void Fire()
@@ -66,7 +88,8 @@ public class PlayerAttack : MonoBehaviour
 			if (hit.collider.GetComponent<FallBlock>())
 			{
 				hit.collider.GetComponent<FallBlock>().GetShot();
-				Instantiate(Particles, hit.point, Quaternion.Euler(hit.normal));
+				GameObject fx = Instantiate(Particles, hit.point, Quaternion.Euler(hit.normal));
+				fx.GetComponent<NetworkObject>().Spawn(true);
 			}
 			else
 			{
