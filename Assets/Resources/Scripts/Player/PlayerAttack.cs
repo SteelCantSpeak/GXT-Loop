@@ -18,6 +18,7 @@ public class PlayerAttack : MonoBehaviour
 	void Start()
     {
 		_input = GetComponent<StarterAssetsInputs>();
+		_cam = transform.parent.GetComponentInChildren<CinemachineVirtualCamera>();
 	}
 
     // Update is called once per frame
@@ -45,11 +46,17 @@ public class PlayerAttack : MonoBehaviour
 		if (_input.shoot)
 		{
 			_input.shoot = false;
-			fire();
+			Fire();
+		}
+
+		//track if Player falls
+		if (transform.position.y <= -10f)
+		{
+			Debug.Log("lost");
 		}
 	}
 
-	void fire()
+	void Fire()
 	{
 		RaycastHit hit;
 		Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
@@ -58,7 +65,7 @@ public class PlayerAttack : MonoBehaviour
 		{
 			if (hit.collider.GetComponent<FallBlock>())
 			{
-				hit.collider.GetComponent<FallBlock>().shot = true;
+				hit.collider.GetComponent<FallBlock>().GetShot();
 				Instantiate(Particles, hit.point, Quaternion.Euler(hit.normal));
 			}
 			else
